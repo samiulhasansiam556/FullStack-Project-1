@@ -87,7 +87,9 @@ class UserController {
       }
 
   
-      static updateUser = async (req, res) => {
+
+      
+    static updateUser = async (req, res) => {
         try {
           const userId = req.user.id;
           const user = await UserModel.findById(userId);
@@ -96,25 +98,25 @@ class UserController {
             return res.status(404).json({ message: 'User not found' });
           }
       
-          // Validate for duplicate username before proceeding
+          // Check if username already exists for another user
           const existingUser = await UserModel.findOne({
             username: req.body.username,
             _id: { $ne: userId },
           });
-          if(existingUser){
-            const recentImage = path.join(process.cwd(), req.file.path);
-            fs.unlink(recentImage, (err) => {
-              if (err) console.error('Failed to delete old photo:', err);
-              else console.log('Old photo deleted successfully.');
-            });
-          }
       
           if (existingUser) {
+            if (req.file) {
+              const recentImage = path.join(process.cwd(), req.file.path);
+              fs.unlink(recentImage, (err) => {
+                if (err) console.error('Failed to delete uploaded image:', err);
+                else console.log('Uploaded image deleted due to duplicate username.');
+              });
+            }
             return res.status(400).json({ message: 'Username already exists' });
           }
       
           // Delete old profile image if a new one is uploaded
-          if ( req.file) {
+          if (req.file && user.profileImage) {
             const oldImagePath = path.join(process.cwd(), user.profileImage);
             fs.unlink(oldImagePath, (err) => {
               if (err) console.error('Failed to delete old photo:', err);
@@ -140,6 +142,7 @@ class UserController {
           res.status(500).json({ error: 'Error updating profile' });
         }
       };
+      
       
     
     // static updateUser = async (req, res) => {
