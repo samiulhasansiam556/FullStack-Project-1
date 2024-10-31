@@ -33,15 +33,14 @@ const BlogDetails = () => {
   }
 
   return (
-    <div className="px-40 py-12">
-      <h1 className="text-3xl font-bold text-red-500 mb-4">{blog.title}</h1>
+    <div className="px-4 sm:px-12 md:px-16 lg:px-40 py-6 md:py-12">
+      <h1 className="text-2xl md:text-3xl font-bold text-red-500 mb-4">{blog.title}</h1>
       <img
         src={blog.imageUrl}
         alt={blog.title}
-        className="w-full pb-10 h-96 object-cover rounded"
-
+        className="w-full h-64 md:h-96 object-cover rounded mb-6"
       />
-      <p className="text-gray-700 mb-4">{blog.description}</p>
+      <p className="text-gray-700 text-sm md:text-base">{blog.description}</p>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 function SignUp() {
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: ''
@@ -21,7 +22,7 @@ function SignUp() {
     e.preventDefault();
 
     // Input Validation
-    if (!formData.name || !formData.email || !formData.password || !formData.password_confirmation) {
+    if (!formData.name || !formData.username || !formData.email || !formData.password || !formData.password_confirmation) {
       setError('All fields are required');
       return;
     }
@@ -72,6 +73,20 @@ function SignUp() {
             disabled={loading} // Disable input if loading
           />
         </div>
+      
+        <div className="mb-4">
+        <label className="block text-gray-700 mb-2">Username</label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded"
+          value={formData.username}
+          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+          disabled={loading}
+          required
+        />
+        </div>
+
+
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Email</label>
           <input
@@ -82,6 +97,9 @@ function SignUp() {
             disabled={loading} // Disable input if loading
           />
         </div>
+  
+     
+
         <div className="mb-4">
           <label className="block text-gray-700 mb-2">Password</label>
           <input

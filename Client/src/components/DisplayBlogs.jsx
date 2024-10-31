@@ -77,7 +77,7 @@ const DisplayBlogs = () => {
   };
 
   return (
-    <div className="grid px-12 py-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid px-4 py-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {blogs.map((blog) => (
         <div key={blog._id} className="border p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>

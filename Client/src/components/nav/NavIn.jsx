@@ -112,7 +112,7 @@ function NavIn() {
                 className="w-20 h-20 rounded-full object-cover mr-4 border-2"
               />
               <div>
-                <p className="text-lg font-bold">{authUser.username || 'Guest'}</p>
+                <p className="text-lg font-bold">{authUser.name || 'Guest'}</p>
                 <p className="text-gray-600">{authUser.email || 'N/A'}</p>
               </div>
             </div>

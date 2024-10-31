@@ -14,18 +14,29 @@ import path from 'path';  // Add this import if missing
 class UserController {
    
     static userRegistration = async (req, res) => {
-        const { name, email, password, password_confirmation } = req.body
+        const { name,username, email, password, password_confirmation } = req.body
         const user = await UserModel.findOne({ email: email })
         if (user) {
           res.send({ "status": "failed", "message": "Email already exists" })
         } else {
-          if (name && email && password && password_confirmation) {
+
+          const existingUser = await UserModel.findOne({
+            username: req.body.username,
+          });
+
+          if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists' });
+          }
+      
+
+          if (name && username && email && password && password_confirmation) {
             if (password === password_confirmation) {
               try {
                 const salt = await bcrypt.genSalt(10)
                 const hashPassword = await bcrypt.hash(password, salt)
                 const doc = new UserModel({
                   name: name,
+                  username: username,
                   email: email,
                   password: hashPassword,
         
@@ -103,7 +114,7 @@ class UserController {
           }
       
           // Delete old profile image if a new one is uploaded
-          if ( user.profileImage && req.file) {
+          if ( req.file) {
             const oldImagePath = path.join(process.cwd(), user.profileImage);
             fs.unlink(oldImagePath, (err) => {
               if (err) console.error('Failed to delete old photo:', err);
