@@ -11,9 +11,12 @@ function NavIn() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const profileImagePath = authUser.profileImage
-    ? `${VITE_SERVER_URL}/${authUser.profileImage.replace(/\\/g, '/')}`
-    : '/default-profile.png';
+  // const profileImagePath = authUser.profileImage
+  //   ? `${VITE_SERVER_URL}/${authUser.profileImage.replace(/\\/g, '/')}`
+  //   : '/default-profile.png';
+  
+  //   console.log(VITE_SERVER_URL, authUser.profileImage, profileImagePath);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,7 +60,7 @@ function NavIn() {
             className="focus:outline-none rounded-full overflow-hidden border-2 border-white"
           >
             <img
-              src={profileImagePath}
+              src={authUser.profileImage}
               alt="Profile"
               className="w-10 h-10 md:w-12 md:h-12 object-cover"
             />
@@ -107,7 +110,7 @@ function NavIn() {
             <h3 className="text-xl font-semibold mb-4">Profile</h3>
             <div className="flex items-center mb-4">
               <img
-                src={profileImagePath}
+                src={authUser.profileImage}
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover mr-4 border-2"
               />

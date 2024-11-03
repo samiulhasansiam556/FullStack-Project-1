@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { useParams,Link,useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "react-modal";
 
@@ -16,13 +16,16 @@ const SearchResults = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
   const token = localStorage.getItem("authtoken");
+  const navigate =useNavigate();
 
   useEffect(() => {
     const fetchResults = async () => {
+      const token = localStorage.getItem('authtoken');
       try {
         const response = await axios.get(
-          `${VITE_SERVER_URL}/api/user/search/${username}`
-        );
+          `${VITE_SERVER_URL}/api/user/search/${username}`,{
+          headers: { Authorization: `Bearer ${token}` },
+      });
         setUser(response.data.user);
         setPosts(response.data.posts);
       } catch (err) {
@@ -33,6 +36,9 @@ const SearchResults = () => {
 
     fetchResults();
   }, [username]);
+
+
+
 
   const handleLike = async (postId) => {
     try {
@@ -62,6 +68,12 @@ const SearchResults = () => {
   };
 
   if (error) return <p>{error}</p>;
+
+
+  const handleSearch = (username) => {
+    setIsModalOpen(false)
+    navigate(`/home/search/${username}`);
+  };
 
   return (
     <>
@@ -117,7 +129,9 @@ const SearchResults = () => {
           <div className="max-h-60 overflow-y-auto">
             {likedUsers.map((like) => (
               <div key={like._id} className="border-b py-2">
-                <p>
+                <p className="text-blue-500 hover:underline cursor-pointer"
+                   onClick={(()=>handleSearch(like.user.username))}
+                >
                   {like.user.username} ({like.user.email})
                 </p>
               </div>

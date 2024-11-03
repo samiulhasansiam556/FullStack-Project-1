@@ -1,19 +1,25 @@
+
 import UserModel from "../models/userModel.js";
 import Blog from '../models/blogSchema.js';
-
-
+import cloudinary from 'cloudinary';
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import transporter from "../configs/emailConfig.js";
 
-import fs from 'fs';  // Add this import if missing
-import path from 'path';  // Add this import if missing
+import fs from 'fs';  
+import path from 'path';  
 
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 class UserController {
    
-    static userRegistration = async (req, res) => {
+  static userRegistration = async (req, res) => {
         const { name,username, email, password, password_confirmation } = req.body
         const user = await UserModel.findOne({ email: email })
         if (user) {
@@ -60,7 +66,7 @@ class UserController {
       }
 
 
-    static userLogin = async (req, res) => {
+ static userLogin = async (req, res) => {
         try {
           const { email, password } = req.body
           if (email && password) {
@@ -84,67 +90,185 @@ class UserController {
           console.log(error)
           res.send({ "status": "failed", "message": "Unable to Login" })
         }
-      }
-
+     }
   
-
-      
-    static updateUser = async (req, res) => {
+  
+ static updateUser = async (req, res) => {
         try {
           const userId = req.user.id;
           const user = await UserModel.findById(userId);
-      
+    
           if (!user) {
             return res.status(404).json({ message: 'User not found' });
           }
-      
-          // Check if username already exists for another user
+    
+          // Check if username exists for another user
           const existingUser = await UserModel.findOne({
             username: req.body.username,
             _id: { $ne: userId },
           });
-      
+    
           if (existingUser) {
             if (req.file) {
-              const recentImage = path.join(process.cwd(), req.file.path);
-              fs.unlink(recentImage, (err) => {
+              fs.unlink(req.file.path, (err) => {
                 if (err) console.error('Failed to delete uploaded image:', err);
                 else console.log('Uploaded image deleted due to duplicate username.');
               });
             }
             return res.status(400).json({ message: 'Username already exists' });
           }
-      
-          // Delete old profile image if a new one is uploaded
-          if (req.file && user.profileImage) {
-            const oldImagePath = path.join(process.cwd(), user.profileImage);
-            fs.unlink(oldImagePath, (err) => {
-              if (err) console.error('Failed to delete old photo:', err);
-              else console.log('Old photo deleted successfully.');
+
+          // Handle Cloudinary upload if a new image file is provided
+          let cloudinaryUrl = user.profileImage;
+          if (req.file) {
+            const localImagePath = path.join(process.cwd(), req.file.path);   
+            const result = await cloudinary.uploader.upload(localImagePath);
+            fs.unlink(localImagePath, (err) => {
+              if (err) console.error('Failed to delete local image:', err);
+              else console.log('Local image deleted after Cloudinary upload.');
             });
+    
+            cloudinaryUrl = result.secure_url;
+    
+            // Remove old image from Cloudinary if it exists
+           if (user.profileImage) {
+              const publicId = user.profileImage.split('/').pop().split('.')[0];
+              await cloudinary.uploader.destroy(publicId);
+            }
           }
-      
-          // Prepare updated user data
+    
+          // Update user data
           const updatedData = {
             name: req.body.name,
             username: req.body.username,
             phone: req.body.phone,
             address: req.body.address,
-            profileImage: req.file ? req.file.path : user.profileImage,
+            profileImage: cloudinaryUrl,
           };
-      
-          // Update user in DB
+    
           const updatedProfile = await UserModel.findByIdAndUpdate(userId, updatedData, { new: true });
           res.json({ user: updatedProfile, message: 'Profile updated successfully' });
-      
         } catch (error) {
           console.error(error);
           res.status(500).json({ error: 'Error updating profile' });
-        }
-      };
-      
-      
+       }
+  };
+  
     
+//static updateUser = async (req, res) => {
+//         try {
+//           const userId = req.user.id;
+//           const user = await UserModel.findById(userId);
+      
+//           if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//           }
+      
+//           // Check if username already exists for another user
+//           const existingUser = await UserModel.findOne({
+//             username: req.body.username,
+//             _id: { $ne: userId },
+//           });
+      
+//           if (existingUser) {
+//             if (req.file) {
+//               const recentImage = path.join(process.cwd(), req.file.path);
+//               fs.unlink(recentImage, (err) => {
+//                 if (err) console.error('Failed to delete uploaded image:', err);
+//                 else console.log('Uploaded image deleted due to duplicate username.');
+//               });
+//             }
+//             return res.status(400).json({ message: 'Username already exists' });
+//           }
+      
+//           // Delete old profile image if a new one is uploaded
+//           if (req.file && user.profileImage) {
+//             const uploadResponse = await cloudinary.uploader.upload(req.file.path);
+//             console.log(uploadResponse.secure_url)
+//             const oldImagePath = path.join(process.cwd(), user.profileImage);
+//             fs.unlink(oldImagePath, (err) => {
+//               if (err) console.error('Failed to delete old photo:', err);
+//               else console.log('Old photo deleted successfully.');
+//             });
+//           }
+      
+//           // Prepare updated user data
+//           const updatedData = {
+//             name: req.body.name,
+//             username: req.body.username,
+//             phone: req.body.phone,
+//             address: req.body.address,
+//             profileImage: req.file ? uploadResponse.secure_url : user.profileImage,
+//           };
+      
+//           // Update user in DB
+//           const updatedProfile = await UserModel.findByIdAndUpdate(userId, updatedData, { new: true });
+//           res.json({ user: updatedProfile, message: 'Profile updated successfully' });
+      
+//         } catch (error) {
+//           console.error(error);
+//           res.status(500).json({ error: 'Error updating profile' });
+//         }
+//       };
+          
+
+   
+//  static updateUser = async (req, res) => {
+//         try {
+//           const userId = req.user.id;
+//           const user = await UserModel.findById(userId);
+      
+//           if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//           }
+      
+//           // Check if username already exists for another user
+//           const existingUser = await UserModel.findOne({
+//             username: req.body.username,
+//             _id: { $ne: userId },
+//           });
+      
+//           if (existingUser) {
+//             if (req.file) {
+//               const recentImage = path.join(process.cwd(), req.file.path);
+//               fs.unlink(recentImage, (err) => {
+//                 if (err) console.error('Failed to delete uploaded image:', err);
+//                 else console.log('Uploaded image deleted due to duplicate username.');
+//               });
+//             }
+//             return res.status(400).json({ message: 'Username already exists' });
+//           }
+      
+//           // Delete old profile image if a new one is uploaded
+//           if (req.file && user.profileImage) {
+//             const oldImagePath = path.join(process.cwd(), user.profileImage);
+//             fs.unlink(oldImagePath, (err) => {
+//               if (err) console.error('Failed to delete old photo:', err);
+//               else console.log('Old photo deleted successfully.');
+//             });
+//           }
+      
+//           // Prepare updated user data
+//           const updatedData = {
+//             name: req.body.name,
+//             username: req.body.username,
+//             phone: req.body.phone,
+//             address: req.body.address,
+//             profileImage: req.file ? req.file.path : user.profileImage,
+//           };
+      
+//           // Update user in DB
+//           const updatedProfile = await UserModel.findByIdAndUpdate(userId, updatedData, { new: true });
+//           res.json({ user: updatedProfile, message: 'Profile updated successfully' });
+      
+//         } catch (error) {
+//           console.error(error);
+//           res.status(500).json({ error: 'Error updating profile' });
+//         }
+//       };
+      
+      
+  
     // static updateUser = async (req, res) => {
 
     //   const user = await UserModel.findById(req.body.id);
@@ -183,7 +307,7 @@ class UserController {
     //   };
       
       
-    
+  
   static changeUserPassword = async (req, res) => {
     const { password, password_confirmation } = req.body
     if (password && password_confirmation) {
@@ -211,7 +335,7 @@ class UserController {
       if (user) {
         const secret = user._id + process.env.JWT_SECRET_KEY
         const token = jwt.sign({ userID: user._id }, secret, { expiresIn: '15m' })
-        const link = `https://b-practice-4.netlify.app/resetpassword/${user._id}/${token}`
+        const link = `${process.env.CLIENT_URL}/resetpassword/${user._id}/${token}`
       
         
        // Send Email
@@ -231,9 +355,7 @@ class UserController {
       res.send({ "status": "failed", "message": "Email Field is Required" })
     }
   } 
-
-     
-
+  
   static userPasswordReset = async (req, res) => {
     const { password, password_confirmation } = req.body
     const { id, token } = req.params
@@ -259,25 +381,41 @@ class UserController {
     }
   }
 
-  static findUserandBlog = async (req, res) => {
-    const { username } = req.params;
   
+  static findUserandBlog = async (req, res) => {  
+    const { username } = req.params; 
     try {
-      // Find user by username
+      // Find user by username and populate posts in one query
       const user = await UserModel.findOne({ username }).populate('posts');
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-  
-      // Fetch user's posts
-      const posts = await Blog.find({ user: user._id });
-  
-      res.status(200).json({ user, posts });
+      res.status(200).json({ user, posts: user.posts });
     } catch (error) {
       console.error('Error searching user:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+  
+   // static findUserandBlog = async (req, res) => {
+  //   const { username } = req.params;
+  
+  //   try {
+  //     // Find user by username
+  //     const user = await UserModel.findOne({ username }).populate('posts');
+  //     if (!user) {
+  //       return res.status(404).json({ message: 'User not found' });
+  //     }
+  //    console.log(user)
+  //     // Fetch user's posts
+  //     const posts = await Blog.find({ user: user._id });
+  
+  //     res.status(200).json({ user, posts });
+  //   } catch (error) {
+  //     console.error('Error searching user:', error);
+  //     res.status(500).json({ message: 'Internal server error' });
+  //   }
+  // };
 
 
 }

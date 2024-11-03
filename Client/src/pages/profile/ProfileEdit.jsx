@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import toast from 'react-hot-toast'
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const ProfileEdit = () => {
@@ -58,14 +58,14 @@ const ProfileEdit = () => {
   
       if (response.status === 200) {
         localStorage.setItem('authuser', JSON.stringify(response.data.user));
-        alert('Profile updated successfully!');
+        toast.success('Profile updated successfully!',{position:'top-right'});
         navigate('/home');
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
-        alert(error.response.data.message);  // Display backend error message (e.g., 'Username already exists')
+        toast.success(error.response.data.message,{position:'top-right'});  // Display backend error message (e.g., 'Username already exists')
       } else {
-        alert('There was an error updating the profile.');
+        toast.success('There was an error updating the profile.',{position:'top-right'});
       }
       console.error('Error updating profile:', error);
     }

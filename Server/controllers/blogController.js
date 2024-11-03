@@ -1,13 +1,11 @@
 
-
-
 // controllers/blogController.js
 import mongoose from 'mongoose';
 import Blog from '../models/blogSchema.js';
 import Like from '../models/likeModel.js';
 import User from '../models/userModel.js';
 import cloudinary from 'cloudinary';
-import fs from 'fs'; // Import the file system module
+import fs from 'fs'; 
 
 // Cloudinary configuration
 cloudinary.config({
@@ -22,7 +20,9 @@ export const createBlog = async (req, res) => {
     const { title, description } = req.body;
     const userId = req.user._id; // Get user ID from request
 
-    console.log(req.user);
+    // console.log(req.user);
+    // console.log(req.file);
+
 
     // Upload image to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(req.file.path);
@@ -98,7 +98,13 @@ export const deleteBlog = async (req, res) => {
       }
   
       // Delete the blog from the Blog collection
-      await Blog.findByIdAndDelete(id);
+      const deleteImg = await Blog.findByIdAndDelete(id);
+  
+  
+      if(deleteImg.imageUrl){
+        const publicId = deleteImg.imageUrl.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(publicId);
+      }
   
       // Remove the blog ID from the user's collection
       await User.findByIdAndUpdate(req.user._id, { $pull: { blogs: id } });

@@ -7,9 +7,9 @@ import path from "path"; // Import the 'path' module
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js"
 
-dotenv.config();
 
 const server = express();
+dotenv.config();
 
 // Middleware
 server.use(bodyParser.json());

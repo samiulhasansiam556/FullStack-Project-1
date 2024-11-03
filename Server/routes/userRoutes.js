@@ -1,7 +1,7 @@
 import express from "express";
 import UserController from "../controllers/userController.js";
 import checkUserAuth from "../middlewares/user-auth-middlewares.js";
-import multer from "../configs/multerConfig.js"
+import upload from "../configs/multerConfig.js"
 
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 router.use('/changepassword', checkUserAuth)
 router.use('/loggeduser', checkUserAuth)
 router.use('/updateuser', checkUserAuth)
-// router.get('/search/:username',checkUserAuth)
+router.use('/search/:username',checkUserAuth)
 
 
 //Public Routes
@@ -24,7 +24,7 @@ router.post('/reset/:id/:token', UserController.userPasswordReset)
 //Protected Routes
 router.post('/changepassword', UserController.changeUserPassword)
 router.get('/loggeduser', UserController.loggedUser)
-router.post('/updateuser',multer.single("image") ,UserController.updateUser)
+router.post('/updateuser',upload.single("image") ,UserController.updateUser)
 router.get('/search/:username',UserController.findUserandBlog)
 
 
