@@ -18,7 +18,7 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Input Validation
+
     if (!formData.password || !formData.password_confirmation) {
       setError('All fields are required');
       return;
@@ -32,21 +32,19 @@ const ResetPassword = () => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      // Post request to backend API
+      
       const response = await axios.post(`${url}/api/user/reset/${id}/${token}`, formData);
 
-      // Handle successful password reset
+  
       if (response.data.status === 'success') {
         toast.success(response.data.message, { position: 'top-right' });
         navigate('/signin'); // Redirect to the sign-in page after successful reset
       } else {
-        // Handle error response from backend
         setError(response.data.message);
       }
     } catch (err) {
       console.error('Password reset error:', err);
-
-      // Handle cases where err.response is undefined
+      
       if (err.response && err.response.data) {
         setError(err.response.data.message || 'An error occurred');
       } else {

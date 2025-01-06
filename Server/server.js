@@ -35,5 +35,5 @@ mongoose
 server.use("/api/blog",blogRoutes);
 server.use("/api/user", userRoutes);
 
-// Serve static files from 'public' folder
-server.use('/public', express.static(path.join(process.cwd(), 'public')));
+// // Serve static files from 'public' folder
+// server.use('/public', express.static(path.join(process.cwd(), 'public')));

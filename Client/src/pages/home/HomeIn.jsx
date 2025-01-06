@@ -1,7 +1,6 @@
+
 import DisplayBlogs from "../../components/DisplayBlogs";
 import NavIn from "../../components/nav/NavIn";
-
-
 
 
 function HomeIn() {

@@ -13,7 +13,7 @@ function SignUp() {
   });
 
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
   
   const url = import.meta.env.VITE_SERVER_URL;
@@ -21,7 +21,7 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Input Validation
+  
     if (!formData.name || !formData.username || !formData.email || !formData.password || !formData.password_confirmation) {
       setError('All fields are required');
       return;
@@ -35,7 +35,7 @@ function SignUp() {
     try {
       setLoading(true); // Disable the button by setting loading to true
 
-      // Post request to backend API
+      
       const response = await axios.post(`${url}/api/user/register`, formData);
 
       if (response.data.status === 'success') {

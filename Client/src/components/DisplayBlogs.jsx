@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Modal from 'react-modal';
 
@@ -9,7 +9,7 @@ const DisplayBlogs = () => {
   const [likedUsers, setLikedUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const token = localStorage.getItem('authtoken');
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -52,6 +52,10 @@ const DisplayBlogs = () => {
     }
   };
 
+  const handleSearch = (username) => {
+    setIsModalOpen(false)
+    navigate(`/home/search/${username}`);
+  };
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
@@ -123,27 +127,32 @@ const DisplayBlogs = () => {
 
       {/* Modal to display liked users */}
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="Liked Users"
-        className="bg-white p-4 rounded shadow-lg w-96 mx-auto mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-      >
-        <h2 className="text-xl font-semibold mb-4">Users who liked this post</h2>
-        <div className="max-h-60 overflow-y-auto">
-          {likedUsers.map((like) => (
-            <div key={like._id} className="border-b py-2">
-              <p>{like.user.username} ({like.user.email})</p>
-            </div>
-          ))}
-        </div>
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="mt-4 text-red-500"
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          contentLabel="Liked Users"
+          className="bg-white p-4 rounded shadow-lg w-96 mx-auto mt-20"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+          ariaHideApp={false}
         >
-          Close
-        </button>
-      </Modal>
+          <h2 className="text-xl font-semibold mb-4">Users who liked this post</h2>
+          <div className="max-h-60 overflow-y-auto">
+            {likedUsers.map((like) => (
+              <div key={like._id} className="border-b py-2">
+                <p className="text-blue-500 hover:underline cursor-pointer"
+                   onClick={(()=>handleSearch(like.user.username))}
+                >
+                  {like.user.username} ({like.user.email})
+                </p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="mt-4 text-red-500"
+          >
+            Close
+          </button>
+        </Modal>
     </div>
   );
 };

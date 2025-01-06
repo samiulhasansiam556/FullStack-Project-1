@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const ResetEmailSend = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
 
   const url = import.meta.env.VITE_SERVER_URL;
@@ -14,7 +14,7 @@ const ResetEmailSend = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Input Validation
+  
     if (!email) {
       setError('Email field is required');
       return;
@@ -23,20 +23,20 @@ const ResetEmailSend = () => {
     try {
       setLoading(true); // Disable further submissions
 
-      // Post request to backend API
+      
       const response = await axios.post(`${url}/api/user/send-reset-password-email`, { email });
 
-      // Handle successful response
+    
       if (response.data.status === 'success') {
         toast.success(response.data.message, { position: 'top-right' });
-        navigate('/signin'); // Redirect to Sign In page
+        navigate('/signin'); 
       } else {
-        setError(response.data.message); // Display backend error message
+        setError(response.data.message); 
       }
     } catch (err) {
       console.error('Reset email error:', err);
 
-      // Handle cases where err.response is undefined
+      
       if (err.response && err.response.data) {
         setError(err.response.data.message || 'An error occurred');
       } else {

@@ -4,7 +4,7 @@ import { useParams,Link,useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Modal from "react-modal";
 
-Modal.setAppElement("#root"); // Adjust if your app's root element ID differs
+// Modal.setAppElement("#root"); // Adjust if your app's root element ID differs
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 

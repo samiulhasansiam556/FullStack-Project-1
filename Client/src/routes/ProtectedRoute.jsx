@@ -4,7 +4,7 @@
 
 // const ProtectedRoute = ({ children }) => {
 
-//   const authToken = localStorage.getItem("authtoken");
+// const authToken = localStorage.getItem("authtoken");
 
   
 //   if (authToken) {
@@ -29,6 +29,7 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     const verifyToken = async () => {
+      
       if (!authToken) {
         setIsAuthenticated(false);
         setLoading(false);
@@ -61,7 +62,7 @@ const ProtectedRoute = () => {
       }
     };
 
-    verifyToken();
+      verifyToken();
   }, [authToken]);
 
   if (loading) {

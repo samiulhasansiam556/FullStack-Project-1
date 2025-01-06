@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
-const ProfileEdit = () => {
-  const [formData, setFormData] = useState({
 
+
+const ProfileEdit = () => {
+ 
+  const [formData, setFormData] = useState({
     name: '',
     username: '',
     phone: '',
@@ -17,7 +19,7 @@ const ProfileEdit = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useEffect(() => { 
     const user = JSON.parse(localStorage.getItem('authuser')) || {};
     setFormData({
       name: user.name || '',
