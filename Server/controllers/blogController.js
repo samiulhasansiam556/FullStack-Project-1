@@ -1,5 +1,5 @@
 
-// controllers/blogController.js
+
 import mongoose from 'mongoose';
 import Blog from '../models/blogSchema.js';
 import Like from '../models/likeModel.js';
@@ -14,25 +14,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-//create blog
+
 export const createBlog = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const userId = req.user._id; // Get user ID from request
+    const userId = req.user._id; 
 
     // console.log(req.user);
     // console.log(req.file);
 
-
-    // Upload image to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(req.file.path);
 
-    // Create a new blog post
     const newBlog = new Blog({
       title,
       description,
       imageUrl: uploadResponse.secure_url,
-      user: userId, // Save user ID in blog
+      user: userId, 
     });
 
     await newBlog.save();
@@ -117,7 +114,6 @@ export const deleteBlog = async (req, res) => {
   };
 
 //like
-
 export const toggleLike = async (req, res) => {
   try {
     const { blogId } = req.params;
@@ -148,11 +144,14 @@ export const toggleLike = async (req, res) => {
   }
 };
 
+
+
 // Fetch users who liked a blog
 export const getBlogLikes = async (req, res) => {
   try {
     const { blogId } = req.params;
     const likes = await Like.find({ blog: blogId }).populate('user', 'name username email');
+  //  console.log(likes)
     res.status(200).json(likes);
   } catch (error) {
     console.error(error);

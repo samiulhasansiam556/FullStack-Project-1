@@ -94,6 +94,10 @@ class UserController {
   
   
  static updateUser = async (req, res) => {
+        
+        
+  console.log(req)  
+        console.log(req.file)
         try {
           const userId = req.user.id;
           const user = await UserModel.findById(userId);
@@ -117,6 +121,7 @@ class UserController {
             }
             return res.status(400).json({ message: 'Username already exists' });
           }
+            
 
           // Handle Cloudinary upload if a new image file is provided
           let cloudinaryUrl = user.profileImage;
@@ -379,14 +384,16 @@ class UserController {
       console.log(error)
       res.send({ "status": "failed", "message": "Invalid Token" })
     }
-  }
+  } 
 
   
   static findUserandBlog = async (req, res) => {  
     const { username } = req.params; 
+  
     try {
       // Find user by username and populate posts in one query
       const user = await UserModel.findOne({ username }).populate('posts');
+      console.log(user)
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }

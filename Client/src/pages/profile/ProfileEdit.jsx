@@ -26,7 +26,7 @@ const ProfileEdit = () => {
       username: user.username || '',
       phone: user.phone || '',
       address: user.address || '',
-      image: null,
+      image: "drtu",
     });
   }, []);
 

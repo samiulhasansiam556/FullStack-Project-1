@@ -1,7 +1,10 @@
 import jwt from 'jsonwebtoken'
 import UserModel from '../models/userModel.js'
 
+
+
 var checkUserAuth = async (req, res, next) => {
+
   let token
   const { authorization } = req.headers
   if (authorization && authorization.startsWith('Bearer')) {

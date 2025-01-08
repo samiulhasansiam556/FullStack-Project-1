@@ -22,10 +22,12 @@ const SearchResults = () => {
     const fetchResults = async () => {
       const token = localStorage.getItem('authtoken');
       try {
-        const response = await axios.get(
-          `${VITE_SERVER_URL}/api/user/search/${username}`,{
+        const response = await axios.get(`${VITE_SERVER_URL}/api/user/search/${username}`,
+          
+       {
           headers: { Authorization: `Bearer ${token}` },
-      });
+       });
+
         setUser(response.data.user);
         setPosts(response.data.posts);
       } catch (err) {

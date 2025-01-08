@@ -1,6 +1,4 @@
 
-
-// routes/blogRoutes.js
 import express from "express";
 import { createBlog, getUserBlogs,getBlogById,deleteBlog,toggleLike,getBlogLikes} from "../controllers/blogController.js";
 import checkUserAuth from "../middlewares/user-auth-middlewares.js";
