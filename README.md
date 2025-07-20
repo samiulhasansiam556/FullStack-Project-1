@@ -84,7 +84,7 @@ A modern, feature-rich blogging platform built with React and Node.js, featuring
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:samiulhasansiam556/FullStack-Project-1.git
    cd blog-application
    ```
 
@@ -160,7 +160,8 @@ A modern, feature-rich blogging platform built with React and Node.js, featuring
 
 ## 📱 Screenshots
 
-*Add screenshots of your application here*
+<img width="1915" height="860" alt="Screenshot 2025-07-21 014917" src="https://github.com/user-attachments/assets/865291e7-b1f3-4e22-9bbe-d823487c1906" />
+
 
 ## 🤝 Contributing
 
