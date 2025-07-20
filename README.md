@@ -160,7 +160,11 @@ A modern, feature-rich blogging platform built with React and Node.js, featuring
 
 ## 📱 Screenshots
 
-<img width="1915" height="860" alt="Screenshot 2025-07-21 014917" src="https://github.com/user-attachments/assets/865291e7-b1f3-4e22-9bbe-d823487c1906" />
+<img width="1919" height="866" alt="Screenshot 2025-07-21 013257" src="https://github.com/user-attachments/assets/d0ec3678-5a2f-4888-8623-440f7fa1e6e4" />
+<img width="1918" height="864" alt="Screenshot 2025-07-21 013312" src="https://github.com/user-attachments/assets/3164869a-3577-4cd4-a255-7b69e4935305" />
+
+<img width="1918" height="864" alt="Screenshot 2025-07-21 014636" src="https://github.com/user-attachments/assets/c755ba94-248f-437a-b69d-87deeb5b21e8" />
+
 
 
 ## 🤝 Contributing
